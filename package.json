@@ -1,0 +1,16 @@
+{
+  "name": "fantasygen",
+  "version": "1.0.0",
+  "description": "Fantasy name generator using Markov Chains and Gary Gygax's Extraordinary Book of Names",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Alexandre Giraud",
+  "license": "ISC"
+}

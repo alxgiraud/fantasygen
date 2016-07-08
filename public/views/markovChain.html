@@ -1,0 +1,390 @@
+<div class="tabContent" ng-controller="markovChainCtrl">
+
+    <!-- Modal templates -->
+    <script type="text/ng-template" id="howItWorksModalContent.html">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" ng-click="ok()" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">How it works?</h4>
+        </div>
+        <div class="modal-body">
+            <p>
+                <strong>Markov chain</strong> is a procedural algorithm used to make coherent chains of values.
+                <br />
+                <br /> This site uses this algorithm to generate fantasy names, using dictionaries of words as training data.
+                <br />
+                <br /> The results are highly customizable. Click on <strong>Show Settings</strong> button to customize them.
+                <br /> The <strong>Markov's order</strong> defines the amount of characters "looked back" by the algorithm. Set lower orders to generate more random results.
+                <br />
+                <br /> You can also create your own set of data to generate any kind of names including food, animals, places, monsters, etc.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()" data-dismiss="modal">OK</button>
+        </div>
+
+    </script>
+
+    <script type="text/ng-template" id="deleteModalContent.html">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" ng-click="cancel()" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Delete confirmation</h4>
+        </div>
+        <div class="modal-body">
+            <p>
+                Are you sure you want to delete the dictionary <strong>{{ title }}</strong>?
+                <br /><span class="text-warning">This action cannot be undone.</span>
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" type="button" ng-click="cancel()" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-warning" type="button" ng-click="remove()" data-dismiss="modal">Delete</button>
+        </div>
+
+    </script>
+
+    <script type="text/ng-template" id="renameModalContent.html">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" ng-click="cancel()" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Rename Dictionary</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="form-group" ng-class="{ 'has-error': title === undefined }">
+                    <label for="inputTitle" class="col-sm-2 control-label">Title</label>
+                    <div class="col-sm-10">
+                        <input type="text" maxlength="25" class="form-control" id="inputTitle" placeholder="Enter new title" ng-model="title" required>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" type="button" ng-click="cancel()" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" type="button" ng-click="rename()" data-dismiss="modal">Rename</button>
+        </div>
+
+    </script>
+
+    <script type="text/ng-template" id="loadModalContent.html">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" ng-click="cancel()" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Load External Dictionary</h4>
+        </div>
+        <div class="modal-body">
+            <div>
+                <p>
+                    You can load external dictionaries using <a href="https://en.wikipedia.org/wiki/JSON" target="_blank">JSON</a> format.
+                    <br />Multiple objects in an array for the same JSON is allowed.
+                    <br />The object loaded must respect the format below. 
+                </p>
+                <pre><code>{
+    "title": "Example Title"
+    "values": ["lorem", "ipsum", "dolor"]
+}</code></pre>
+
+                <div class="form-group">
+                    <button class="btn btn-sm btn-default" ng-click="onClickExamples()">
+                        <span ng-show="!hasUrlExamplesDisplayed"><i class="fa fa-caret-right"></i> Show</span>
+                        <span ng-show="hasUrlExamplesDisplayed"><i class="fa fa-caret-down"></i> Hide</span> Examples
+                    </button>
+                </div>
+
+                <div ng-show="hasUrlExamplesDisplayed">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>URL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Fruits</td>
+                                <td><a href="https://api.myjson.com/bins/13scn" target="_blank">https://api.myjson.com/bins/13scn</a></td>
+                            </tr>
+                            <tr>
+                                <td>French Foods</td>
+                                <td><a href="https://api.myjson.com/bins/4cdvr" target="_blank">https://api.myjson.com/bins/4cdvr</a></td>
+                            </tr>
+                            <tr>
+                                <td>Irish Names</td>
+                                <td><a href="https://api.myjson.com/bins/2sw73" target="_blank">https://api.myjson.com/bins/2sw73</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <form class="form-horizontal">
+                <div class="form-group" ng-class="{ 'has-error': (url.length === undefined && clicked) }">
+                    <label for="inputTitle" class="col-sm-2 control-label">URL</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputTitle" placeholder="Enter URL" ng-model="url" required>
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-2">
+                    <strong class="text-danger">{{ error }}</strong>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <span ng-show="isLoading">
+                <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
+            </span>
+            <button class="btn btn-default" type="button" ng-click="cancel()" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" type="button" ng-click="load()" data-dismiss="modal">Load</button>
+        </div>
+
+    </script>
+
+    <script type="text/ng-template" id="resetModalContent.html">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" ng-click="cancel()" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Reset confirmation</h4>
+        </div>
+        <div class="modal-body">
+            <p>
+                <strong>Are you sure you want to reset all the dictionaries?</strong>
+                <br />This action will restore the default presets and erase all your saved dictionaries.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" type="button" ng-click="cancel()" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-warning" type="button" ng-click="reset()" data-dismiss="modal">Reset</button>
+        </div>
+
+    </script>
+    <!-- End of Modal templates -->
+
+    <div ng-show="error">
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+    </div>
+
+    <div ng-show="generatorReady">
+
+        <h4>Markov Generator</h4>
+
+        <div class="row">
+            <div class="col-xs-10">
+                <div class="btn-group main-dropdown" uib-dropdown id="dictionary-dico">
+                    <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle>
+                        {{ selectedDictionary.title }}<span ng-show="selectedDictionary.isUnsaved"> (unsaved)</span> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                        <li role="menuitem" ng-repeat="choice in dictionaries track by $index">
+                            <a href ng-click="onSelectDictionary(choice)">
+                        {{ choice.title }}<span ng-show="choice.isUnsaved" class="text-muted"> (unsaved)</span>
+                    </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <button type="button" class="btn btn-default pull-right" ng-click="openHowItWorksModal()">
+                    <i class="fa fa-question visible-xs-inline"></i>
+                    <span class="hidden-xs">How it works?</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Action bar -->
+        <div class="form-group">
+            <textarea class="form-control lg-textarea" ng-model="dictionary" ng-change="onChangeDictionary()"></textarea>
+
+            <div class="btn-group btn-group-justified main-dropdown" role="group">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" ng-click="createDictionary()">
+                        <i class="fa fa-plus-circle"></i><span class="hidden-xs"> New</span>
+                    </button>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" ng-click="saveDictionary()" ng-class="{'btn-highlight' : selectedDictionary.isUnsaved }" ng-disabled="!selectedDictionary.isUnsaved">
+                        <i class="fa fa-floppy-o"></i><span class="hidden-xs"> Save</span>
+                    </button>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" ng-click="openRenameModal()">
+                        <i class="fa fa-pencil"></i><span class="hidden-xs"> Rename</span>
+                    </button>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" ng-click="openDeleteModal()">
+                        <i class="fa fa-trash-o"></i><span class="hidden-xs"> Delete</span>
+                    </button>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" ng-click="openLoadModal()">
+                        <i class="glyphicon glyphicon-import"></i><span class="hidden-xs"> Load</span>
+                    </button>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-warning" ng-click="openResetModal()">
+                        <i class="fa fa-recycle"></i><span class="hidden-xs"> Reset all</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings button -->
+        <div class="form-group">
+            <button class="btn btn-default" slide-toggle="#settingsMarkov" ng-click="onClickSettings()">
+                <i class="fa fa-cog"></i>
+                <span ng-show="!hasSettingsDisplayed">Show</span>
+                <span ng-show="hasSettingsDisplayed">Hide</span> Settings
+            </button>
+        </div>
+
+        <!-- Setting button -->
+        <div id="settingsMarkov" class="slideable">
+            <form class="well">
+                <div class="row">
+
+                    <div class="form-group col-sm-8">
+                        <label for="lengthSlider">Length</label>
+                        <slider id="lengthSlider" ng-model="sliderLength.value" min="sliderLength.min" step="sliderLength.step" max="sliderLength.max" value="sliderLength.value" range=true tooltip=always on-start-slide="onSlideLength($event)" on-slide="onSlideLength($event)">
+                        </slider>
+                    </div>
+
+                    <div class="form-group col-sm-4">
+
+                        <label for="contains">Order</label>
+
+                        <div class="pull-right">
+                            <strong tooltip-placement="top" tooltip-append-to-body="true" uib-tooltip="Define the amount of characters 'looked back' by the algorithm. Set lower values to generate more random results.">
+                            
+                            <i class="fa fa-question-circle-o"></i>
+                        </strong>
+                        </div>
+
+                        <slider id="orderSlider" ng-model="sliderOrder.value" min="sliderOrder.min" step="sliderOrder.step" max="sliderOrder.max" value="sliderOrder.value" tooltip=always on-start-slide="onSlideOrder($event)" on-slide="onSlideOrder($event)">
+                        </slider>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-sm-3">
+                        <label for="starWith">Start With</label>
+                        <input type="text" class="form-control" id="starWith" ng-model="startWith" ng-change="generateMarkovChains()">
+                    </div>
+                    <div class="form-group col-sm-3">
+                        <label for="contains">Contains</label>
+                        <input type="text" class="form-control" id="contains" ng-model="contains" ng-change="generateMarkovChains()">
+                    </div>
+                    <div class="form-group col-sm-3">
+                        <label for="doesntContains">Does not contains</label>
+                        <input type="text" class="form-control" id="doesntContains" ng-model="doesntContains" ng-change="generateMarkovChains()">
+                    </div>
+                    <div class="form-group col-sm-3">
+                        <label for="endWith">End With</label>
+                        <input type="text" class="form-control" id="endWith" ng-model="endWith" ng-change="generateMarkovChains()">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-8">
+                <h4>Results</h4>
+            </div>
+            <div class="col-xs-4 text-right">
+
+                <span>
+                <total-selector 
+                    selected-value="totalNames" 
+                    values="[10, 30, 60, 100, 250, 500]"
+                    select-total-items="onSelectTotalItems(total)">
+                </total-selector>
+            </span>
+
+                <a href ng-click="generateMarkovChains()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a>
+            </div>
+        </div>
+
+        <p ng-show="names.length === 0" class="text-warning">No results found. Please change the settings</p>
+
+        <!-- LG -->
+        <table class="table hidden-xs hidden-sm hidden-md">
+            <tbody>
+                <tr ng-repeat="name in names track by $index" ng-switch on="$index % 5">
+                    <td ng-switch-when="0" width=20%>
+                        {{ names[$index] }}
+                    </td>
+                    <td ng-switch-when="0" width=20%>
+                        {{ names[$index + 1] }}
+                    </td>
+                    <td ng-switch-when="0" width=20%>
+                        {{ names[$index + 2] }}
+                    </td>
+                    <td ng-switch-when="0" width=20%>
+                        {{ names[$index + 3] }}
+                    </td>
+                    <td ng-switch-when="0" width=20%>
+                        {{ names[$index + 4] }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- MD -->
+        <table class="table hidden-xs hidden-sm hidden-lg">
+            <tbody>
+                <tr ng-repeat="name in names track by $index" ng-switch on="$index % 4">
+                    <td ng-switch-when="0" width=25%>
+                        {{ names[$index] }}
+                    </td>
+                    <td ng-switch-when="0" width=25%>
+                        {{ names[$index + 1] }}
+                    </td>
+                    <td ng-switch-when="0" width=25%>
+                        {{ names[$index + 2] }}
+                    </td>
+                    <td ng-switch-when="0" width=25%>
+                        {{ names[$index + 3] }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- SM -->
+        <table class="table hidden-xs hidden-md hidden-lg">
+            <tbody>
+                <tr ng-repeat="name in names track by $index" ng-switch on="$index % 3">
+                    <td ng-switch-when="0" width=33.33%>
+                        {{ names[$index] }}
+                    </td>
+                    <td ng-switch-when="0" width=33.33%>
+                        {{ names[$index + 1] }}
+                    </td>
+                    <td ng-switch-when="0" width=33.33%>
+                        {{ names[$index + 2] }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- XS -->
+        <table class="table hidden-sm hidden-md hidden-lg">
+            <tbody>
+                <tr ng-repeat="name in names track by $index" ng-switch on="$index % 2">
+                    <td ng-switch-when="0" width=50%>
+                        {{ names[$index] }}
+                    </td>
+                    <td ng-switch-when="0" width=50%>
+                        {{ names[$index + 1] }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

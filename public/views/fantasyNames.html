@@ -1,0 +1,73 @@
+<div class="tabContent" ng-controller="fantasyNamesCtrl">
+
+    <div class="row">
+        <div class="col-xs-8">
+            <h4>Generic Fantasy Names</h4>
+        </div>
+        <div class="col-xs-4 text-right">
+            <span>
+                <total-selector 
+                    selected-value="totalItems" 
+                    values="[10, 30, 60, 100, 250, 500]"
+                    select-total-items="onSelectTotalItems(total)">
+                </total-selector>
+            </span>
+
+            <a href ng-click="refresh()">
+                <span class="glyphicon glyphicon-refresh icon-refresh" aria-hidden="true"></span>
+            </a>
+        </div>
+    </div>
+
+    <!-- MD & LG -->
+    <table class="table hidden-xs hidden-sm">
+        <tbody>
+            <tr ng-repeat="name in names track by $index" ng-switch on="$index % 4">
+                <td ng-switch-when="0" width=25%>
+                    {{ names[$index] }}
+                </td>
+                <td ng-switch-when="0" width=25%>
+                    {{ names[$index + 1] }}
+                </td>
+                <td ng-switch-when="0" width=25%>
+                    {{ names[$index + 2] }}
+                </td>
+                <td ng-switch-when="0" width=25%>
+                    {{ names[$index + 3] }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- SM -->
+    <table class="table hidden-xs hidden-md hidden-lg">
+        <tbody>
+            <tr ng-repeat="name in names track by $index" ng-switch on="$index % 3">
+                <td ng-switch-when="0" width=33.33%>
+                    {{ names[$index] }}
+                </td>
+                <td ng-switch-when="0" width=33.33%>
+                    {{ names[$index + 1] }}
+                </td>
+                <td ng-switch-when="0" width=33.33%>
+                    {{ names[$index + 2] }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- XS -->
+    <table class="table hidden-sm hidden-md hidden-lg">
+        <tbody>
+            <tr ng-repeat="name in names track by $index" ng-switch on="$index % 2">
+                <td ng-switch-when="0" width=50%>
+                    {{ names[$index] }}
+                </td>
+                <td ng-switch-when="0" width=50%>
+                    {{ names[$index + 1] }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>

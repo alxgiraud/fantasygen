@@ -1,0 +1,117 @@
+<div class="tabContent" ng-controller="tavernCtrl">
+
+    <div class="form-group">
+        <button class="btn btn-default" slide-toggle="#settingsTaverns" ng-click="onClickSettings()">
+            <i class="fa fa-cog"></i>
+            <span ng-show="!hasSettingsDisplayed">Show</span>
+            <span ng-show="hasSettingsDisplayed">Hide</span> Settings
+        </button>
+    </div>
+
+    <div id="settingsTaverns" class="slideable">
+        <form class="well">
+
+            <div class="form-group">
+                <label>Nouns</label>
+                <textarea class="form-control md-textarea" ng-model="nouns" ng-change="refresh()"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Adjectives</label>
+                <textarea class="form-control md-textarea" ng-model="adjectives" ng-change="refresh()"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Titles</label>
+                <textarea class="form-control md-textarea" ng-model="titles" ng-change="refresh()"></textarea>
+            </div>
+
+            <p class="text-info">
+                <i class="fa fa-info-circle"></i> Separate the values by semicolon (;). Multiple words for a single value are allowed.
+            </p>
+
+            <div class="row">
+                <div class="form-group col-sm-3">
+                    <label for="starWith">Start With</label>
+                    <input type="text" class="form-control" id="starWith" ng-model="startWith" ng-change="refresh()">
+                </div>
+                <div class="form-group col-sm-3">
+                    <label for="contains">Contains</label>
+                    <input type="text" class="form-control" id="contains" ng-model="contains" ng-change="refresh()">
+                </div>
+                <div class="form-group col-sm-3">
+                    <label for="doesntContains">Does not contains</label>
+                    <input type="text" class="form-control" id="doesntContains" ng-model="doesntContains" ng-change="refresh()">
+                </div>
+                <div class="form-group col-sm-3">
+                    <label for="endWith">End With</label>
+                    <input type="text" class="form-control" id="endWith" ng-model="endWith" ng-change="refresh()">
+                </div>
+            </div>
+
+            <button class="btn btn-default btn-sm" ng-click="reset()"><i class="fa fa-repeat"></i> Reset settings</button>
+
+        </form>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-8">
+            <h4>Taverns</h4>
+        </div>
+        <div class="col-xs-4 text-right">
+
+            <span>
+                <total-selector 
+                    selected-value="totalItems" 
+                    values="[10, 30, 60, 100, 250, 500]"
+                    select-total-items="onSelectTotalItems(total)">
+                </total-selector>
+            </span>
+
+            <a href ng-click="refresh()">
+                <span class="glyphicon glyphicon-refresh icon-refresh" aria-hidden="true"></span>
+            </a>
+        </div>
+    </div>
+
+
+
+    <!-- MD & LG -->
+    <table class="table hidden-xs hidden-sm">
+        <tbody>
+            <tr ng-repeat="t in taverns track by $index" ng-switch on="$index % 3">
+                <td ng-switch-when="0" width=33.33%>
+                    {{ taverns[$index] }}
+                </td>
+                <td ng-switch-when="0" width=33.33%>
+                    {{ taverns[$index + 1] }}
+                </td>
+                <td ng-switch-when="0" width=33.33%>
+                    {{ taverns[$index + 2] }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- SM -->
+    <table class="table hidden-xs hidden-md hidden-lg">
+        <tbody>
+            <tr ng-repeat="t in taverns track by $index" ng-switch on="$index % 2">
+                <td ng-switch-when="0" width=50%>
+                    {{ taverns[$index] }}
+                </td>
+                <td ng-switch-when="0" width=50%>
+                    {{ taverns[$index + 1] }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- XS -->
+    <table class="table hidden-sm hidden-md hidden-lg">
+        <tbody>
+            <tr ng-repeat="t in taverns track by $index">
+                <td>{{ t }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>

@@ -1,0 +1,77 @@
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+    display: none !important;
+}
+
+.tooltip {
+    z-index: 750;
+}
+
+.btn:focus {
+    outline: none;
+}
+
+.container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.tabContent {
+    margin-top: 20px;
+}
+
+.main-dropdown {
+    margin-bottom: 20px;
+}
+
+.btn-highlight {
+    box-shadow: -1px -4px 0px -2px #2fa4e7 inset;
+}
+
+.md-textarea {
+    min-height: 100px;
+}
+
+.lg-textarea {
+    min-height: 200px;
+}
+
+.slider-track-high,
+.slider-track-low {
+    background: #fff;
+    border: 1px solid #ccc;
+}
+
+.slider-selection {
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: none;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+
+#lengthSlider .slider-selection {
+    background: #2fa4e7;
+}
+
+.slider-handle {
+    background: #ffffff;
+    border: 1px solid #ccc;
+}
+
+.totalitems-dropdown {
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.totalitems-dropdown-menu {
+    min-width: 100px;
+}
+
+.icon-refresh {
+    vertical-align: middle;
+}
