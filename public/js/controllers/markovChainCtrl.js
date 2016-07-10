@@ -354,29 +354,32 @@ app.controller('markovChainCtrl', ['$scope', '$window', '$q', '$uibModal', 'pouc
     };
 
     $scope.resetDictionaries = function () {
-        $scope.selectedDictionary.isUnsaved = false;
-        $q.when(pouchDBServices.reset()).then(function (result) {
-            var i;
-            $scope.dictionaries = [];
 
-            if (typeof result !== 'undefined' && typeof result.rows !== 'undefined') {
-                result.rows.sort(util.creationOrder);
+        $q.when(pouchDBServices.reset())
+            .then(function (result) {
+                var i;
+                $scope.dictionaries = [];
 
-                for (i = 0; i < result.rows.length; i += 1) {
-                    $scope.dictionaries.push({
-                        id: result.rows[i].doc._id,
-                        title: result.rows[i].doc.title,
-                        dictionary: result.rows[i].doc.values,
-                        isUnsaved: false
-                    });
+                if (typeof result !== 'undefined' && typeof result.rows !== 'undefined') {
+                    result.rows.sort(util.creationOrder);
+
+                    for (i = 0; i < result.rows.length; i += 1) {
+                        $scope.dictionaries.push({
+                            id: result.rows[i].doc._id,
+                            title: result.rows[i].doc.title,
+                            dictionary: result.rows[i].doc.values,
+                            isUnsaved: false
+                        });
+                    }
+
+                    $scope.onSelectDictionary($scope.dictionaries[0]);
+                    $scope.error = '';
                 }
 
-                $scope.onSelectDictionary($scope.dictionaries[0]);
-            }
-
-        }).catch(function (error) {
-            $scope.error = 'Oops... Something went wrong during the reset.';
-        });
+            })
+            .catch(function (error) {
+                $scope.error = 'Oops... Something went wrong during the reset.';
+            });
     };
     /* */
 
@@ -504,6 +507,7 @@ app.controller('markovChainCtrl', ['$scope', '$window', '$q', '$uibModal', 'pouc
 
         })
         .catch(function (error) {
-            $scope.error = 'Oops... Something went wrong on initialization. Please try again later.';
+            $scope.error = 'Oops... Something went wrong during initialization. Please try to reset the data or come back later.';
+            $scope.generatorReady = true;
         });
 }]);

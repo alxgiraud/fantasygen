@@ -4,7 +4,10 @@ app.factory('pouchDBServices', ['$q', '$http', function ($q, $http) {
     'use strict';
 
     var CONFIG_DB_NAME = 'markovDictionaries',
-        db = new PouchDB(CONFIG_DB_NAME),
+        isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream,
+        db = (isiOS) ? new PouchDB(CONFIG_DB_NAME, {
+            adapter: 'fruitdown'
+        }) : new PouchDB(CONFIG_DB_NAME),
 
         loadDefaultDictionaries = function () {
             var deferred = $q.defer();
@@ -35,7 +38,6 @@ app.factory('pouchDBServices', ['$q', '$http', function ($q, $http) {
         getAllDictionaries: function () {
 
             var deferred = $q.defer();
-
             db.allDocs({
                 include_docs: true
             }).then(function (result) {
@@ -139,7 +141,7 @@ app.factory('pouchDBServices', ['$q', '$http', function ($q, $http) {
                 }).then(function (response) {
                     deferred.resolve(response);
                 });
-                
+
             }).catch(function (err) {
                 deferred.reject(err);
             });
@@ -151,7 +153,9 @@ app.factory('pouchDBServices', ['$q', '$http', function ($q, $http) {
             var deferred = $q.defer();
 
             db.destroy().then(function () {
-                db = new PouchDB(CONFIG_DB_NAME);
+                db = (isiOS) ? new PouchDB(CONFIG_DB_NAME, {
+                    adapter: 'fruitdown'
+                }) : new PouchDB(CONFIG_DB_NAME);
                 $q.when(loadDefaultDictionaries()).then(function (response) {
                     deferred.resolve(response);
                 });
@@ -161,6 +165,5 @@ app.factory('pouchDBServices', ['$q', '$http', function ($q, $http) {
 
             return deferred.promise;
         }
-
     };
 }]);

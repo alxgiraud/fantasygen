@@ -78,7 +78,7 @@
                 <p>
                     You can load external dictionaries using <a href="https://en.wikipedia.org/wiki/JSON" target="_blank">JSON</a> format.
                     <br />Multiple objects in an array for the same JSON is allowed.
-                    <br />The object loaded must respect the format below. 
+                    <br />The object loaded must respect the format below.
                 </p>
                 <pre><code>{
     "title": "Example Title"
@@ -138,8 +138,8 @@
                 <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
             </span>
-            <button class="btn btn-default" type="button" ng-click="cancel()" data-dismiss="modal">Cancel</button>
-            <button class="btn btn-primary" type="button" ng-click="load()" data-dismiss="modal">Load</button>
+            <button class="btn btn-default" type="button" ng-click="cancel()" data-dismiss="modal" ng-disabled="isLoading">Cancel</button>
+            <button class="btn btn-primary" type="button" ng-click="load()" data-dismiss="modal" ng-disabled="isLoading">Load</button>
         </div>
 
     </script>
@@ -197,10 +197,10 @@
             </div>
         </div>
 
-        <!-- Action bar -->
         <div class="form-group">
             <textarea class="form-control lg-textarea" ng-model="dictionary" ng-change="onChangeDictionary()"></textarea>
 
+            <!-- Action bar -->
             <div class="btn-group btn-group-justified main-dropdown" role="group">
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-default" ng-click="createDictionary()">
