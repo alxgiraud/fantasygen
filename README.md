@@ -48,7 +48,7 @@ They are generated using random word with the patterns below.
     <description> <group>
 
 ## Taverns
-Generate tavern names based using random words with the following patterns. 
+Generate tavern names using random words with the following patterns. 
 
     <adjective> <noun>
     <adjective> <noun> <title>
@@ -59,7 +59,7 @@ Generate tavern names based using random words with the following patterns.
     <adjective> <title>
     The <adjective> <title>
     
-The words used to generate the names can be customized.
+The words used to generate the names can be customized by the user.
 
 It implements what is defined on [this D&D wiki page](https://www.dandwiki.com/wiki/Well_Over_100_Tavern_Names_(DnD_Other)#Totally_Random).
 
