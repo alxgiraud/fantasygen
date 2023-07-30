@@ -6,23 +6,23 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
     'use strict';
     $routeProvider
         .when('/markovChain', {
-            templateUrl: '../views/markovChain.html',
+            templateUrl: './views/markovChain.html',
             controller: 'markovChainCtrl'
         })
         .when('/genericFantasy', {
-            templateUrl: '../views/fantasyNames.html',
+            templateUrl: './views/fantasyNames.html',
             controller: 'fantasyNamesCtrl'
         })
         .when('/fantasticSpecies', {
-            templateUrl: '../views/fantasticSpecies.html',
+            templateUrl: './views/fantasticSpecies.html',
             controller: 'fantasticSpeciesCtrl'
         })
         .when('/groups', {
-            templateUrl: '../views/groupNames.html',
+            templateUrl: './views/groupNames.html',
             controller: 'groupNamesCtrl'
         })
         .when('/taverns', {
-            templateUrl: '../views/taverns.html',
+            templateUrl: './views/taverns.html',
             controller: 'tavernCtrl'
         })
         .otherwise({
