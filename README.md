@@ -7,7 +7,6 @@
  - AngularJS
  - Twitter Bootstrap
  - PouchDB
- - NodeJS
  
 ## Markov chain
 Generate fantasy names using dictionaries of words as training data. 
