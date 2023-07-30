@@ -1,6 +1,6 @@
 # Fantasy Generator
 
-### http://fantasygen.herokuapp.com/
+### https://alxgiraud.github.io/fantasygen
 
 ## Technology stack
 
